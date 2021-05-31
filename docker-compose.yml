@@ -7,6 +7,7 @@ services:
     container_name: kanka
     env_file:
       - .docker/web/variables.env
+    restart: ${RESTART_POLICY}
     environment:
       APP_DEBUG: ${APP_DEBUG}
       APP_LOG_LEVEL: ${APP_LOG_LEVEL}
@@ -26,7 +27,7 @@ services:
       - database
   database:
     image: mariadb:10
-    restart: unless-stopped
+    restart: ${RESTART_POLICY}
     environment:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
@@ -38,7 +39,7 @@ services:
       - database
   redis:
     image: redis
-    restart: always
+    restart: ${RESTART_POLICY}
     volumes:
       - ${DATA_REDIS}:/data
     networks:
