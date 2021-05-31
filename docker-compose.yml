@@ -33,16 +33,27 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
-      - ./db/mariadb:/var/lib/mysql
+      - ${DATA_MARIADB}:/var/lib/mysql
     networks:
       - database
   redis:
     image: redis
     restart: always
     volumes:
-      - ./db/redis:/data
+      - ${DATA_REDIS}:/data
     networks:
       - database
+  redirect:
+    image: morbz/docker-web-redirect
+    restart: ${RESTART_POLICY}
+    logging:
+      driver: ${LOGGING}
+    environment:
+      - VIRTUAL_HOST=${DOMAIN_ALT}
+      - LETSENCRYPT_HOST=${DOMAIN_ALT}
+      - REDIRECT_TARGET=${DOMAIN}
+    networks:
+      - web
 networks:
   web:
     external:
